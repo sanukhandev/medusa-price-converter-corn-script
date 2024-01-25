@@ -6,9 +6,8 @@ import uuid
 # Function to convert SGD to another currency
 
 
-# calcuate run time
-
-#
+# CONFIG
+BASE_CURRENCY = 'SGD'
 
 
 def generate_id(prefix):
@@ -30,7 +29,8 @@ with open('latest.json', 'r') as file:
     aud_rate = data['rates']['AUD']
 
 # Database connection
-conn_string = "postgresql://doadmin:AVNS_ltTQ26l8Dts_boY5_H_@db-postgresql-sgp1-14005-do-user-14754380-0.b.db.ondigitalocean.com:25060/invisdb?sslmode=require&sslrootcert=ca-certificate.crt"
+# reomved DB String for security reasons
+conn_string = "//"
 
 conn = psycopg2.connect(conn_string)
 cursor = conn.cursor()
