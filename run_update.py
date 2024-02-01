@@ -29,8 +29,7 @@ with open('latest.json', 'r') as file:
     aud_rate = data['rates']['AUD']
 
 # Database connection
-# reomved DB String for security reasons
-conn_string = "//"
+conn_string = "<Removed_for_security>"
 
 conn = psycopg2.connect(conn_string)
 cursor = conn.cursor()
