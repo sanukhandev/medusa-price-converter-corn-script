@@ -3,6 +3,9 @@ import time
 import psycopg2
 import pandas as pd
 import uuid
+import os
+from dotenv import load_dotenv
+load_dotenv()
 # Function to convert SGD to another currency
 
 
@@ -28,8 +31,9 @@ with open('latest.json', 'r') as file:
     cad_rate = data['rates']['CAD']
     aud_rate = data['rates']['AUD']
 
-# Database connection
-conn_string = "<Removed_for_security>"
+# Database connection from env variables DATABASE_URL
+conn_string = os.getenv('DATABASE_URL')
+print(f"Connecting to database {conn_string}...")
 
 conn = psycopg2.connect(conn_string)
 cursor = conn.cursor()
@@ -49,8 +53,11 @@ WHERE ma.currency_code = 'sgd'
 # delete all non sgd prices
 cursor.execute(query_non_SGD)
 non_sgd_prices = cursor.fetchall()
+print("Deleting non-SGD prices...")
 for non_sgd_price in non_sgd_prices:
     non_sgd_id = non_sgd_price[0]
+    # print presentage of completion
+    print(f"{(non_sgd_prices.index(non_sgd_price)/len(non_sgd_prices))*100}%")
     cursor.execute(
         f"DELETE FROM product_variant_money_amount WHERE money_amount_id = '{non_sgd_id}'")
     cursor.execute(f"DELETE FROM money_amount WHERE id = '{non_sgd_id}'")
@@ -71,11 +78,12 @@ insert_variant_sql = """
 INSERT INTO product_variant_money_amount (id,money_amount_id, variant_id, created_at, updated_at)
 VALUES (%s,%s, %s, NOW(), NOW());
 """
-
+print("price Processing...")
 # Process each SGD price
 for sgd_price in sgd_prices:
     sgd_id, amount, variant_id = sgd_price
-
+    # print presentage of completion
+    print(f"{(sgd_prices.index(sgd_price)/len(sgd_prices))*100}%")
     # Convert amounts
     usd_amount = convert_sgd(amount, usd_rate)
     cad_amount = convert_sgd(amount, cad_rate)
