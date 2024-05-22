@@ -30,6 +30,8 @@ with open('latest.json', 'r') as file:
     usd_rate = data['rates']['USD']
     cad_rate = data['rates']['CAD']
     aud_rate = data['rates']['AUD']
+    myr_rate = data['rates']['MYR']
+    thb_rate = data['rates']['THB']
 
 # Database connection from env variables DATABASE_URL
 conn_string = os.getenv('DATABASE_URL')
@@ -82,6 +84,8 @@ for sgd_price in sgd_prices:
     usd_amount = convert_sgd(amount, usd_rate)
     cad_amount = convert_sgd(amount, cad_rate)
     aud_amount = convert_sgd(amount, aud_rate)
+    myr_amount = convert_sgd(amount, myr_rate)
+    thb_amount = convert_sgd(amount, thb_rate)
 
     # Insert USD, CAD, AUD prices and get their new IDs
     cursor.execute(insert_price_sql, (generate_id('ma_'), 'usd', usd_amount))
@@ -93,6 +97,12 @@ for sgd_price in sgd_prices:
     cursor.execute(insert_price_sql, (generate_id('ma_'), 'aud', aud_amount))
     aud_id = cursor.fetchone()[0]
 
+    cursor.execute(insert_price_sql, (generate_id('ma_'), 'myr', aud_amount))
+    myr_id = cursor.fetchone()[0]
+    
+    cursor.execute(insert_price_sql, (generate_id('ma_'), 'thb', aud_amount))
+    thb_id = cursor.fetchone()[0]
+
     # Associate new prices with the specific product variant
     cursor.execute(insert_variant_sql,
                    (generate_id('pvma_'), usd_id, variant_id))
@@ -100,6 +110,10 @@ for sgd_price in sgd_prices:
                    (generate_id('pvma_'), cad_id, variant_id))
     cursor.execute(insert_variant_sql,
                    (generate_id('pvma_'), aud_id, variant_id))
+    cursor.execute(insert_variant_sql,
+                   (generate_id('pvma_'), myr_id, variant_id))
+    cursor.execute(insert_variant_sql,
+                   (generate_id('pvma_'), thb_id, variant_id))
 
 # Commit changes
 conn.commit()
