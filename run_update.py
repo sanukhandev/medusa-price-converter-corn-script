@@ -87,7 +87,7 @@ for sgd_price in sgd_prices:
     myr_amount = convert_sgd(amount, myr_rate)
     thb_amount = convert_sgd(amount, thb_rate)
 
-    # Insert USD, CAD, AUD prices and get their new IDs
+    # Insert USD, CAD, AUD, MYR, THB prices and get their new IDs
     cursor.execute(insert_price_sql, (generate_id('ma_'), 'usd', usd_amount))
     usd_id = cursor.fetchone()[0]
 
@@ -97,10 +97,10 @@ for sgd_price in sgd_prices:
     cursor.execute(insert_price_sql, (generate_id('ma_'), 'aud', aud_amount))
     aud_id = cursor.fetchone()[0]
 
-    cursor.execute(insert_price_sql, (generate_id('ma_'), 'myr', aud_amount))
+    cursor.execute(insert_price_sql, (generate_id('ma_'), 'myr', myr_amount))
     myr_id = cursor.fetchone()[0]
     
-    cursor.execute(insert_price_sql, (generate_id('ma_'), 'thb', aud_amount))
+    cursor.execute(insert_price_sql, (generate_id('ma_'), 'thb', thb_amount))
     thb_id = cursor.fetchone()[0]
 
     # Associate new prices with the specific product variant
